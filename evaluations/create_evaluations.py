@@ -161,7 +161,8 @@ def create_evaluation():
     new_evaluation.patient = new_patient
 
     # get pathology and asign it as desease
-    deseases = get_deseases_csv("deseases.csv")
+    deseases = get_deseases_csv("../deseases.csv")
+    # TODO make refactor with function get_random_pathology
     eval_pathology = None
     while eval_pathology is None:
         desease = random.choice(deseases)
@@ -187,7 +188,7 @@ def create_evaluation():
     try:
         new_evaluation.save()
     except Exception as e:
-        new_evaluation.delete
+        new_evaluation.delete()
         logging.error("<p>Error: %s</p>" % str(e))
         raise e
     logging.info(
@@ -196,7 +197,7 @@ def create_evaluation():
 
 
 if __name__ == "__main__":
-    setup_logging("app.log")
+    setup_logging("../app.log")
 
     connect_to_gnu()
 
