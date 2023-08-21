@@ -1,10 +1,25 @@
 import json
 
 from proteus import config, Model
-import statistics
-from datetime import date
 from faker import Faker
 import pandas as pd
+import random
+
+import logging
+
+
+def setup_logging(log_filename, log_level=logging.INFO):
+    """
+    Set up basic logging configuration.
+
+    Parameters:
+    - log_filename (str): The name of the file to log messages to.
+    - log_level: The root logger level (default is logging.INFO).
+    """
+    # Set up the basic configuration
+    logging.basicConfig(filename=log_filename,
+                        level=log_level,
+                        format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 def connect_to_gnu():
@@ -18,10 +33,20 @@ def connect_to_gnu():
     return conf
 
 
+def get_deseases_csv(file):
+    df = pd.read_csv(file)
+    return df.loc[:,"GNUHEALTH" ].to_list()
+
+
 def get_pathology(pathology_name):
     Pathology = Model.get('gnuhealth.pathology')
-    pathology = Pathology.find([("name", "ilike", pathology_name)])[0]
-    return pathology
+    pathology = Pathology.find([("name", "ilike", pathology_name)])
+    if len(pathology) > 0:
+        pathology = pathology[0]
+        return pathology
+    else:
+        logging.info(f"non pathology named: {pathology_name}")
+        return None
 
 
 def generate_random_datetime(start_date, end_date):
@@ -58,7 +83,7 @@ def generate_random_endtime(start_datetime):
 
 
 def create_new_patient():
-    print("creating new party:...")
+    logging.info("creating new party:...")
     fake = Faker()
 
     # create fake name
@@ -87,11 +112,12 @@ def create_new_patient():
     try:
         new_party.save()
     except Exception as e:
-        new_party.delete
-        print("<p>Error: %s</p>" % str(e))
-    print(f"new party saved as:")
-    print(f"new party id: {new_party.id}")
-    print(f"new party name: {new_party.name}")
+        new_party.delete()
+        logging.error("<p>Error: %s</p>" % str(e))
+        raise e
+    logging.info(f"new party saved as:")
+    logging.info(f"new party id: {new_party.id}")
+    logging.info(f"new party name: {new_party.name}")
 
     # create new party
 
@@ -102,20 +128,20 @@ def create_new_patient():
     try:
         new_patient.save()
     except Exception as e:
-        new_party.delete
-        print("<p>Error: %s</p>" % str(e))
+        new_party.delete()
+        new_patient.delete()
+        logging.error("<p>Error: %s</p>" % str(e))
         return None
-    print(f"new patient saved as:")
-    print(f"new patient id{new_patient.id}")
-    print(f"new patient name{new_patient.name}")
+    logging.info(f"new patient saved as:")
+    logging.info(f"new patient id{new_patient.id}")
+    logging.info(f"new patient name{new_patient.name}")
     return new_patient
 
 
-def create_evaluation(desease):
+def create_evaluation():
     # creo un nuevo paciente
     new_patient = create_new_patient()
-
-    print("creating new evaluation...")
+    logging.info("creating new evaluation...")
     # abro una nueva evaluation
     Evaluation = Model.get('gnuhealth.patient.evaluation')
 
@@ -130,9 +156,20 @@ def create_evaluation(desease):
 
     # asign patient
     new_evaluation.patient = new_patient
+    new_evaluation.patient = new_patient
+
+    new_evaluation.patient = new_patient
 
     # get pathology and asign it as desease
-    eval_pathology = get_pathology(desease)
+    deseases = get_deseases_csv("deseases.csv")
+    eval_pathology = None
+    while eval_pathology is None:
+        desease = random.choice(deseases)
+        eval_pathology = get_pathology(desease)
+        # new_evaluation.delete
+        # new_evaluation.save()
+        # new_patient.delete
+        # new_patient.save()
     new_evaluation.diagnosis = eval_pathology
 
     # create start and end evaluation time
@@ -147,20 +184,24 @@ def create_evaluation(desease):
     # TODO hacer un random con las posibilidades
     new_evaluation.state = "signed"
     new_evaluation.discharge_reason = 'home'
-    # todo la evaluación no se cierra...
     try:
         new_evaluation.save()
     except Exception as e:
         new_evaluation.delete
-        print("<p>Error: %s</p>" % str(e))
+        logging.error("<p>Error: %s</p>" % str(e))
         raise e
+    logging.info(
+        f"created new evaluation {new_evaluation.id} with diagnosis {new_evaluation.diagnosis.name} for patient {new_patient.rec_name} with id {new_patient.id}")
     return new_patient, new_evaluation
 
 
 if __name__ == "__main__":
+    setup_logging("app.log")
+
     connect_to_gnu()
-    patient, evaluation = create_evaluation("Yellow fever")
-    print(evaluation.id)
+
+    for i in range(2):
+        create_evaluation()
 
 
 
