@@ -1,11 +1,10 @@
-import json
-
+import logging
 from proteus import config, Model
-from faker import Faker
 import pandas as pd
+from faker import Faker
 import random
 
-import logging
+
 
 
 def setup_logging(log_filename, log_level=logging.INFO):
@@ -32,8 +31,23 @@ def connect_to_gnu():
     conf = config.set_xmlrpc(health_server)
     return conf
 
+def print_record_fields(record):
+    for field_name, field in record._fields.items():
+        value = getattr(record, field_name)
+        # Printing basic information about each field and its value
+        print(f"{field_name} ({type(field).__name__}): {value}")
 
-def get_deseases_csv(file):
+def save_delete(new_record):
+    try:
+        new_record.save()
+    except Exception as e:
+        logging.error("<p>Error: %s</p>" % str(e))
+        new_record.delete()
+        logging.info((f"new_record {new_record.rec_name} id: {new_record.id} deleted"))
+        raise e
+
+
+def get_diseases_csv(file):
     df = pd.read_csv(file)
     return df.loc[:,"GNUHEALTH" ].to_list()
 
@@ -48,6 +62,14 @@ def get_pathology(pathology_name):
         logging.info(f"non pathology named: {pathology_name}")
         return None
 
+
+def get_random_pathology():
+    diseases_list = get_diseases_csv("../deseases.csv")
+    pathology = None
+    while pathology is None:
+        disease = random.choice(diseases_list)
+        pathology = get_pathology(disease)
+    return pathology
 
 def generate_random_datetime(start_date, end_date):
     import random
@@ -82,8 +104,11 @@ def generate_random_endtime(start_datetime):
     return random_datetime
 
 
-def create_new_patient():
-    logging.info("creating new party:...")
+def generate_random_code_6_digits():
+    return random.randint(100000, 999999)
+
+def create_new_party_person():
+    logging.info("creating new party as person ")
     fake = Faker()
 
     # create fake name
@@ -98,8 +123,6 @@ def create_new_patient():
     dob = fake.date_of_birth()
 
     Party = Model.get('party.party')
-    Patient = Model.get('gnuhealth.patient')
-
     # new party data
     new_party = Party()
     new_party.name = name
@@ -108,104 +131,34 @@ def create_new_patient():
     new_party.gender = gender
     new_party.is_patient = True
     new_party.dob = dob
-    # return new_party
-    try:
-        new_party.save()
-    except Exception as e:
-        new_party.delete()
-        logging.error("<p>Error: %s</p>" % str(e))
-        raise e
+    save_delete(new_party)
     logging.info(f"new party saved as:")
     logging.info(f"new party id: {new_party.id}")
     logging.info(f"new party name: {new_party.name}")
+    return new_party
 
+
+def create_new_patient():
+    logging.info("creating new party:...")
+
+    Patient = Model.get('gnuhealth.patient')
     # create new party
-
+    new_party = create_new_party_person()
     new_patient = Patient()
-    new_patient.name = new_party
-    new_patient.gender = gender
+    new_patient.name = create_new_party_person()
+    new_patient.gender = new_party.gender
     new_patient.save()
-    try:
-        new_patient.save()
-    except Exception as e:
-        new_party.delete()
-        new_patient.delete()
-        logging.error("<p>Error: %s</p>" % str(e))
-        return None
+    save_delete(new_patient)
     logging.info(f"new patient saved as:")
     logging.info(f"new patient id{new_patient.id}")
     logging.info(f"new patient name{new_patient.name}")
     return new_patient
 
 
-def create_evaluation():
-    # creo un nuevo paciente
-    new_patient = create_new_patient()
-    logging.info("creating new evaluation...")
-    # abro una nueva evaluation
-    Evaluation = Model.get('gnuhealth.patient.evaluation')
-
-    # open new evaluation
-    new_evaluation = Evaluation()
-    if new_evaluation.id > 0:
-        raise ValueError(f"party is not a new registrer id: {new_evaluation.id}")
-
-    # get Codordara, Cameron as Health Professional
-    healthprof_1 = Model.get('gnuhealth.healthprofessional')(1)
-    new_evaluation.healthprof = healthprof_1
-
-    # asign patient
-    new_evaluation.patient = new_patient
-    new_evaluation.patient = new_patient
-
-    new_evaluation.patient = new_patient
-
-    # get pathology and asign it as desease
-    deseases = get_deseases_csv("../deseases.csv")
-    # TODO make refactor with function get_random_pathology
-    eval_pathology = None
-    while eval_pathology is None:
-        desease = random.choice(deseases)
-        eval_pathology = get_pathology(desease)
-        # new_evaluation.delete
-        # new_evaluation.save()
-        # new_patient.delete
-        # new_patient.save()
-    new_evaluation.diagnosis = eval_pathology
-
-    # create start and end evaluation time
-    start_date = '2023-08-01 00:00:00'
-    end_date = '2023-08-31 23:59:59'
-    eval_start = generate_random_datetime(start_date, end_date)
-    eval_endtime = generate_random_endtime(eval_start)
-    new_evaluation.evaluation_start = eval_start
-    new_evaluation.evaluation_endtime = eval_endtime
-
-    # signature and dischage
-    # TODO hacer un random con las posibilidades
-    new_evaluation.state = "signed"
-    new_evaluation.discharge_reason = 'home'
-    try:
-        new_evaluation.save()
-    except Exception as e:
-        new_evaluation.delete()
-        logging.error("<p>Error: %s</p>" % str(e))
-        raise e
-    logging.info(
-        f"created new evaluation {new_evaluation.id} with diagnosis {new_evaluation.diagnosis.name} for patient {new_patient.rec_name} with id {new_patient.id}")
-    return new_patient, new_evaluation
-
-
-if __name__ == "__main__":
-    setup_logging("../app.log")
-
-    connect_to_gnu()
-
-    for i in range(2):
-        create_evaluation()
-
-
-
-
-
-
+def create_new_doctor():
+    # new party data
+    new_doctor = create_new_party_person()
+    new_doctor.is_healthprof = True
+    # TODO HAY QUE HACER MÁS COSAS
+    save_delete(new_doctor)
+    return new_doctor
