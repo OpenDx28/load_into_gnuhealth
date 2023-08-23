@@ -1,0 +1,24 @@
+,dhis2_name,gnu_health_name,gnu_health_code
+0,Cholera ,"Cholera due to Vibrio cholerae 01, biovar cholerae",A00.0
+1,Cholera ,"Cholera due to Vibrio cholerae 01, biovar eltor",A00.1
+2,Cholera ,Cholera vaccine,Y58.2
+3,Cholera ,Need for immunization against cholera alone,Z23.0
+4,Cholera ,Need for immunization against cholera with typhoid-paratyphoid [cholera + TAB],Z27.0
+5,Dengue Fever ,Dengue fever [classical dengue],A90
+6,Measles ,Measles complicated by encephalitis,B05.0
+7,Measles ,Measles complicated by meningitis,B05.1
+8,Measles ,Measles complicated by pneumonia,B05.2
+9,Measles ,Measles complicated by otitis media,B05.3
+10,Measles ,Measles with intestinal complications,B05.4
+11,Measles ,Measles with other complications,B05.8
+12,Measles ,Measles without complication,B05.9
+13,Measles ,Need for immunization against measles alone,Z24.4
+14,Meningitis ,Listerial meningitis and meningoencephalitis,A32.1
+15,Meningitis ,Meningitis in bacterial diseases classified elsewhere,G01
+16,Meningitis ,Meningitis in other infectious and parasitic diseases classified elsewhere,G02
+17,Meningitis ,Meningitis in viral diseases classified elsewhere,G02.0
+18,Meningitis ,Meningitis in mycoses,G02.1
+19,Meningitis ,Meningitis in other specified infectious and parasitic diseases classified elsewhere,G02.8
+20,Meningitis ,Meningitis due to other and unspecified causes,G03
+21,Meningitis ,Benign recurrent meningitis [Mollaret],G03.2
+22,Meningitis ,Meningitis due to other specified causes,G03.8

@@ -20,16 +20,22 @@ def setup_logging(log_filename, log_level=logging.INFO):
                         level=log_level,
                         format='%(asctime)s - %(levelname)s - %(message)s')
 
+def connect_to_gnu(user = 'admin',
+                   password = 'opendx28',
+                   dbname = 'ghs',
+                   hostname = 'localhost',
+                   port = '8001'):
 
-def connect_to_gnu():
-    user = 'admin'
-    password = "opendx28"
-    dbname = "ghs1"
-    hostname = 'localhost'
-    port = '8000'
     health_server = 'http://' + user + ':' + password + '@' + hostname + ':' + port + '/' + dbname + '/'
+    logging.info(f"trying to connect to {health_server}")
     conf = config.set_xmlrpc(health_server)
+    logging.info(f"connected to conf")
     return conf
+
+def get_last_record(ModelName):
+    MyModel = Model.get(ModelName)
+    last = MyModel.find([], order=[("id", "DESC")], limit=1)
+    return last[0]
 
 def print_record_fields(record):
     for field_name, field in record._fields.items():
@@ -49,7 +55,7 @@ def save_delete(new_record):
 
 def get_diseases_csv(file):
     df = pd.read_csv(file)
-    return df.loc[:,"GNUHEALTH" ].to_list()
+    return df.loc[:,"gnu_health_name" ].to_list()
 
 
 def get_pathology(pathology_name):
@@ -64,7 +70,10 @@ def get_pathology(pathology_name):
 
 
 def get_random_pathology():
-    diseases_list = get_diseases_csv("../deseases.csv")
+    import os
+
+    script_directory = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    diseases_list = get_diseases_csv(f"/{script_directory}/diseases.csv")
     pathology = None
     while pathology is None:
         disease = random.choice(diseases_list)
