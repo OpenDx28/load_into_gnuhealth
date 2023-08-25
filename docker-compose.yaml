@@ -1,0 +1,58 @@
+version: "3.3"
+
+# docker build -t opendx/gnu_health https://github.com/OpenDx28/gnu-health-server-docker.git#new_demo
+services:
+  health_1:
+    image: opendx/gnu_health
+    environment:
+      - DB_NAME=ghs
+    links:
+      - postgres
+    #      - thalamus
+    ports:
+      - "8001:8000"
+    #      - "8069:8069"
+    volumes:
+      - ${VOLUMES_BASE_PATH:-./volumes}/ghs1_local:/home/gnuhealth/gnuhealth/tryton/server/modules/local
+    depends_on:
+      - postgres
+  #    condition: service_healthy
+
+  postgres:
+    image: postgres:15.2-alpine
+    environment:
+      - POSTGRES_USER=gnuhealth
+      - POSTGRES_PASSWORD=gnuhealth
+      - PGDATA=/var/lib/postgresql/data/
+    volumes:
+      - ${VOLUMES_BASE_PATH:-./volumes}/pg:/var/lib/postgresql/data
+#    ports:
+#      - "5434:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U gnuhealth -d gnuhealth" ]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+
+  # Base image for gnu_client image:
+  # docker build -t vnc-base https://github.com/OpenDx28/docker-vnc-base.git\#:src
+  # docker build -t gnu-hc --build-arg BASE_IMAGE="vnc-base:latest" https://github.com/OpenDx28/docker-gnu-hc.git\#:src
+  gnu_client:
+    image: gnu-hc
+    user: root
+
+    links:
+      - health_1
+      - postgres
+    #      - thalamus
+    ports:
+      - "6901:6901"
+      - "8085:8085"
+    environment:
+      - VNC_DISABLE_AUTH=true
+    depends_on:
+      - postgres
+      #        condition: service_healthy
+      - health_1
+    command: /bin/bash
+

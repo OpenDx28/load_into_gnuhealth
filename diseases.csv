@@ -1,24 +1,58 @@
 ,dhis2_name,gnu_health_name,gnu_health_code
-0,Cholera ,"Cholera due to Vibrio cholerae 01, biovar cholerae",A00.0
-1,Cholera ,"Cholera due to Vibrio cholerae 01, biovar eltor",A00.1
-2,Cholera ,Cholera vaccine,Y58.2
-3,Cholera ,Need for immunization against cholera alone,Z23.0
-4,Cholera ,Need for immunization against cholera with typhoid-paratyphoid [cholera + TAB],Z27.0
-5,Dengue Fever ,Dengue fever [classical dengue],A90
-6,Measles ,Measles complicated by encephalitis,B05.0
-7,Measles ,Measles complicated by meningitis,B05.1
-8,Measles ,Measles complicated by pneumonia,B05.2
-9,Measles ,Measles complicated by otitis media,B05.3
-10,Measles ,Measles with intestinal complications,B05.4
-11,Measles ,Measles with other complications,B05.8
-12,Measles ,Measles without complication,B05.9
-13,Measles ,Need for immunization against measles alone,Z24.4
-14,Meningitis ,Listerial meningitis and meningoencephalitis,A32.1
-15,Meningitis ,Meningitis in bacterial diseases classified elsewhere,G01
-16,Meningitis ,Meningitis in other infectious and parasitic diseases classified elsewhere,G02
-17,Meningitis ,Meningitis in viral diseases classified elsewhere,G02.0
-18,Meningitis ,Meningitis in mycoses,G02.1
-19,Meningitis ,Meningitis in other specified infectious and parasitic diseases classified elsewhere,G02.8
-20,Meningitis ,Meningitis due to other and unspecified causes,G03
-21,Meningitis ,Benign recurrent meningitis [Mollaret],G03.2
-22,Meningitis ,Meningitis due to other specified causes,G03.8
+0,Cholera,Cholera,A00
+1,Cholera,"Cholera due to Vibrio cholerae 01, biovar cholerae",A00.0
+2,Cholera,"Cholera due to Vibrio cholerae 01, biovar eltor",A00.1
+3,Cholera,"Cholera, unspecified",A00.9
+4,Cholera,Cholera vaccine,Y58.2
+5,Cholera,Need for immunization against cholera alone,Z23.0
+6,Cholera,Need for immunization against cholera with typhoid-paratyphoid [cholera + TAB],Z27.0
+7,Dengue Fever,Dengue fever [classical dengue],A90
+8,Measles,Measles,B05
+9,Measles,Measles complicated by encephalitis,B05.0
+10,Measles,Measles complicated by meningitis,B05.1
+11,Measles,Measles complicated by pneumonia,B05.2
+12,Measles,Measles complicated by otitis media,B05.3
+13,Measles,Measles with intestinal complications,B05.4
+14,Measles,Measles with other complications,B05.8
+15,Measles,Measles without complication,B05.9
+16,Measles,Rubella [German measles],B06
+17,Measles,Need for immunization against measles alone,Z24.4
+18,Measles,Need for immunization against measles-mumps-rubella [MMR],Z27.4
+19,Pertussis,Whooping cough due to Bordetella pertussis,A37.0
+20,Pertussis,Whooping cough due to Bordetella parapertussis,A37.1
+21,Pertussis,"Pertussis vaccine, including combinations with a pertussis component",Y58.6
+22,Pertussis,"Mixed bacterial vaccines, except combinations with a pertussis component",Y58.8
+23,Pertussis,Need for immunization against pertussis alone,Z23.7
+24,Pertussis,"Need for immunization against diphtheria-tetanus-pertussis, combined [DTP]",Z27.1
+25,Pertussis,Need for immunization against diphtheria-tetanus-pertussis with typhoid-paratyphoid [DTP + TAB],Z27.2
+26,Pertussis,Need for immunization against diphtheria-tetanus-pertussis with poliomyelitis [DTP + polio],Z27.3
+27,Plague,Plague,A20
+28,Plague,Bubonic plague,A20.0
+29,Plague,Cellulocutaneous plague,A20.1
+30,Plague,Pneumonic plague,A20.2
+31,Plague,Plague meningitis,A20.3
+32,Plague,Septicaemic plague,A20.7
+33,Plague,Other forms of plague,A20.8
+34,Plague,"Plague, unspecified",A20.9
+35,Plague,Plague vaccine,Y58.3
+36,Plague,Need for immunization against plague,Z23.3
+37,Rabies,Rabies,A82
+38,Rabies,Sylvatic rabies,A82.0
+39,Rabies,Urban rabies,A82.1
+40,Rabies,"Rabies, unspecified",A82.9
+41,Rabies,Contact with and exposure to rabies,Z20.3
+42,Rabies,Need for immunization against rabies,Z24.2
+43,Rubella,Rubella [German measles],B06
+44,Rubella,Rubella with neurological complications,B06.0
+45,Rubella,Rubella with other complications,B06.8
+46,Rubella,Rubella without complication,B06.9
+47,Rubella,Rubella arthritis,M01.4
+48,Rubella,Congenital rubella syndrome,P35.0
+49,Rubella,Contact with and exposure to rubella,Z20.4
+50,Rubella,Need for immunization against rubella alone,Z24.5
+51,Rubella,Need for immunization against measles-mumps-rubella [MMR],Z27.4
+52,Yellow Fever,Yellow fever,A95
+53,Yellow Fever,Sylvatic yellow fever,A95.0
+54,Yellow Fever,Urban yellow fever,A95.1
+55,Yellow Fever,"Yellow fever, unspecified",A95.9
+56,Yellow Fever,Need for immunization against yellow fever,Z24.3

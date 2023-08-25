@@ -14,15 +14,15 @@ if __name__ == "__main__":
     setup_logging("app.log")
 
     # localmente por defecto
-    # connect_to_gnu()
-    connect_to_gnu(user = USER,
-                   password = PASSWORD,
-                   dbname = DB,
-                   hostname = HOSTNAME,
-                   port = PORT)
+    connect_to_gnu()
+    # connect_to_gnu(user = USER,
+    #                password = PASSWORD,
+    #                dbname = DB,
+    #                hostname = HOSTNAME,
+    #                port = PORT)
 
 
-    for i in range(3):
+    for i in range(50):
         create_evaluation()
         create_random_confirmed_disease_case()
         create_random_healed_disease()

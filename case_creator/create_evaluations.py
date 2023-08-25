@@ -9,8 +9,6 @@ def create_evaluation():
 
     # open new evaluation
     new_evaluation = Evaluation()
-    if new_evaluation.id > 0:
-        raise ValueError(f"party is not a new registrer id: {new_evaluation.id}")
 
     # get Codordara, Cameron as Health Professional
     healthprof_1 = Model.get('gnuhealth.healthprofessional')(1)

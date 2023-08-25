@@ -3,8 +3,10 @@ from proteus import config, Model
 import pandas as pd
 from faker import Faker
 import random
+import os
 
-
+SCRIPT_DIRECTORY = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DISEASES_SCV = f"/{SCRIPT_DIRECTORY}/diseases.csv"
 
 
 def setup_logging(log_filename, log_level=logging.INFO):
@@ -70,10 +72,8 @@ def get_pathology(pathology_name):
 
 
 def get_random_pathology():
-    import os
 
-    script_directory = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    diseases_list = get_diseases_csv(f"/{script_directory}/diseases.csv")
+    diseases_list = get_diseases_csv(DISEASES_SCV)
     pathology = None
     while pathology is None:
         disease = random.choice(diseases_list)

@@ -2,3 +2,9 @@
 .idea/
 
 app.log
+
+notebooks4testing/
+
+case_creator/__pycache__/
+
+demo.sql
