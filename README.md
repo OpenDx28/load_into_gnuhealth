@@ -25,11 +25,14 @@ docker build -t opendx/gnu_health https://github.com/OpenDx28/gnu-health-server-
 ``
 
 2. Interfaz Gráfica GNU Health:
+
+
 ``
-docker build -t vnc-base https://github.com/OpenDx28/docker-vnc-base.git\#:src
+docker build -t vnc-base https://github.com/OpenDx28/docker-vnc-base.git#:src
 ``
+
 ``
-docker build -t gnu-hc --build-arg BASE_IMAGE="vnc-base:latest" https://github.com/OpenDx28/docker-gnu-hc.git\#:src
+docker build -t gnu-hc --build-arg BASE_IMAGE="vnc-base:latest" https://github.com/OpenDx28/docker-gnu-hc.git#:src
 ``
 3. Base de datos Postgres:
 Esta imagen se descargará automáticamente al ejecutar el comando docker-compose up -d.
