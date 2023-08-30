@@ -3,8 +3,6 @@ from proteus import ModelList
 from case_creator import *
 
 
-# TODO TIENE PINTA DE QUE TENGO QUE CREAR CAMAS
-
 
 def duplicate_bed(original):
     Bed = Model.get('product.product')
@@ -25,43 +23,70 @@ def duplicate_bed(original):
 
     return copied_bed
 
+def list_bed_product():
+    l = list()
+    all_products = Model.get('product.product').find([])
+    for prod in all_products:
+        if prod.is_bed == True:
+            l.append(prod)
+    return l
 
-def create_new_bed():
+def list_free_bed():
+    l = list()
+    Bed = Model.get('gnuhealth.hospital.bed')
+    beds = Bed.find([])
+    for b in beds:
+        if b.state == 'free':
+            l.append(b)
+    return l
+
+def create_new_bed_as_product():
+    '''
+    Createa new bed in the hospital as product
+    :return:
+    '''
     original_bed = Model.get('product.product')(393)
     copied_bed = duplicate_bed(original_bed)
     number = generate_random_code_6_digits()
     copied_bed.rec_name = f"[BED {number}] {number}"
     copied_bed.code = f"[BED {number}]"
     copied_bed.suffix_code = f"BED {number}"
+    copied_bed.is_bed = True
     save_delete(copied_bed)
-    logging.info(f"created bed with code ")
+    logging.info(f"created bed with code {copied_bed.code} ")
     return copied_bed
+
+def create_new_free_bed(bed_product):
+    '''
+    Create a free bed in the hospital as place for a patient
+    :return:
+    '''
+    Bed = Model.get('gnuhealth.hospital.bed')
+    # # todo creo que en este caso esto no afecta porque rodas scuestan lo mismo
+    # bed_type = random.choice(bed_types)
+    new_bed = Bed()
+    new_bed.name = bed_product
+    new_bed.state = 'free'
+    save_delete(new_bed)
+    logging.info(f"created free with rec name {new_bed.rec_name} and id: {new_bed.id} ")
+    return new_bed
+
+def create_free_bed():
+    new_bed = create_new_bed_as_product()
+    create_new_free_bed(new_bed)
+    return new_bed
+
+
 
 
 def create_occupied_bed():
-    Bed = Model.get('gnuhealth.hospital.bed')
-    bed_types = ['gatch',
-                 'electric',
-                 'stretcher',
-                 'low',
-                 'low_air_loss',
-                 'circo_electric',
-                 'clinitron']
-    # todo creo que en este caso esto no afecta porque rodas scuestan lo mismo
-    bed_type = random.choice(bed_types)
-    new_bed = Bed()
-    new_bed.bed_type = bed_type
-    Bed_product = Model.get('product.product')
-    all_beds_products = Bed_product.find([])
-    new_bed.name = random.choice(all_beds_products)
-    # TODO me saltará un error si no está libre
+
+    # TODO: en el sistema no aparecen las camas ocupadas.. parece que hay que crear un admision?
+    free_beds = list_free_bed()
+    new_bed = random.choice(free_beds)
     new_bed.state = 'occupied'
-    # solo existe el ward materminity ahora mismo
-    new_bed.ward = Model.get('gnuhealth.hospital.ward')(1)
-    new_bed.institution =Model.get('gnuhealth.institution')(1)
-    new_bed.cost_prices = [Model.get('product.cost_price')(449)]
     save_delete(new_bed)
-    logging.info(f"Created new bec type {new_bed.bed_type} with id: {new_bed.id}")
+    logging.info(f"Bed {new_bed.rec_name} with id: {new_bed.id} occupated")
     return new_bed
 
 
@@ -70,5 +95,9 @@ if __name__ == "__main__":
 
     connect_to_gnu()
 
-    for _ in range(2):
-        create_new_bed()
+    for _ in range(10):
+        create_free_bed()
+
+    for _ in range(5):
+        create_occupied_bed()
+
