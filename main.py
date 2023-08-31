@@ -1,7 +1,8 @@
-from case_creator import connect_to_gnu, setup_logging,get_diseases_csv, get_random_pathology
+from case_creator import connect_to_gnu, setup_logging,get_diseases_csv, get_random_pathology, create_new_party_person
 from case_creator.create_evaluations import create_evaluation
 from case_creator.create_disease import create_random_confirmed_disease_case, create_random_healed_disease
 from case_creator.create_death_certificate import create_random_death_certificate
+from case_creator.create_adminision import create_free_bed, create_admission
 
 USER = "admin"
 DB = "ghs"
@@ -22,10 +23,20 @@ if __name__ == "__main__":
     #                port = PORT)
 
 
-    for i in range(50):
+    for i in range(60):
         create_evaluation()
         create_random_confirmed_disease_case()
         create_random_healed_disease()
         create_random_death_certificate()
 
 
+
+    # Create some free beds en Admissions
+    for _ in range(10):
+        create_free_bed()
+
+    for _ in range(3):
+        create_admission()
+
+
+# create_evaluation(disease="cholera")

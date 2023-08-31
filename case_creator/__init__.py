@@ -80,6 +80,13 @@ def get_random_pathology():
         pathology = get_pathology(disease)
     return pathology
 
+def pathology(disease):
+    if not disease:
+        pathology = get_random_pathology()
+    else:
+        pathology = get_pathology(disease)
+    return pathology
+
 def generate_random_datetime(start_date, end_date):
     import random
     from datetime import datetime, timedelta

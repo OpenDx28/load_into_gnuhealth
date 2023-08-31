@@ -1,6 +1,6 @@
 from case_creator import *
 
-def create_evaluation():
+def create_evaluation(disease=None):
     # creo un nuevo paciente
     new_patient = create_new_patient()
     logging.info("creating new evaluation...")
@@ -19,7 +19,7 @@ def create_evaluation():
     new_evaluation.patient = new_patient
 
     new_evaluation.patient = new_patient
-    new_evaluation.diagnosis = get_random_pathology()
+    new_evaluation.diagnosis = pathology(disease)
 
 
     # create start and end evaluation time

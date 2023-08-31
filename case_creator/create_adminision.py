@@ -1,7 +1,8 @@
 import logging
 from proteus import ModelList
 from case_creator import *
-
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 
 def duplicate_bed(original):
@@ -73,8 +74,8 @@ def create_new_free_bed(bed_product):
 
 def create_free_bed():
     new_bed = create_new_bed_as_product()
-    create_new_free_bed(new_bed)
-    return new_bed
+    bed_place = create_new_free_bed(new_bed)
+    return bed_place
 
 
 
@@ -89,15 +90,44 @@ def create_occupied_bed():
     logging.info(f"Bed {new_bed.rec_name} with id: {new_bed.id} occupated")
     return new_bed
 
+def create_admission():
+    """
+    Creación de altas de casos previamente confirmados.
+    :return:
+    """
 
-if __name__ == "__main__":
-    setup_logging("../app.log")
 
-    connect_to_gnu()
+    from create_disease import create_random_confirmed_disease_case
 
-    for _ in range(10):
-        create_free_bed()
+    # create a open evaluation (a patient with a confirmed disease)
+    disease = create_random_confirmed_disease_case()
+    patient = disease.name
+    bed = create_free_bed()
+    time_hospitalization = random.randint(1, 90)
+    start_date = datetime.now()
+    end_date = start_date + relativedelta(days=time_hospitalization)
+    inpatient = Model.get('gnuhealth.inpatient.registration')()
+    inpatient.discharge_date = end_date
+    inpatient.bed = bed
+    bed.state = 'occupied'
+    save_delete(bed)
+    inpatient.admission_reason = disease.pathology
+    inpatient.hospitalization_date = start_date
+    inpatient.patient = patient
+    inpatient.admission_type = 'urgent'
+    save_delete(inpatient)
+    # TODO need Confirm y Admission para que esté completp
+    logging.info(f"create inpatient: {patient.name} with pathology {disease.pathology.name} date admisssion {inpatient.hospitalization_date} statimated discharge date {inpatient.discharge_date}")
+    return inpatient
 
-    for _ in range(5):
-        create_occupied_bed()
+# if __name__ == "__main__":
+#     setup_logging("../app.log")
+#
+#     connect_to_gnu()
+#
+#     for _ in range(20):
+#         create_free_bed()
+#
+#
+#     create_admission()
 
