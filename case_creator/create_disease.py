@@ -47,7 +47,7 @@ def create_random_healed_disease():
 if __name__ == "__main__":
     setup_logging("../app.log")
     connect_to_gnu()
-    for i in range(2):
+    for i in range(1):
         create_random_confirmed_disease_case()
         create_random_healed_disease()
 

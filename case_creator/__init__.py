@@ -80,7 +80,7 @@ def get_random_pathology():
         pathology = get_pathology(disease)
     return pathology
 
-def pathology(disease):
+def pathology(disease = None):
     if not disease:
         pathology = get_random_pathology()
     else:

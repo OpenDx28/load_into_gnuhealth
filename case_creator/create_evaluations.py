@@ -34,6 +34,7 @@ def create_evaluation(disease=None):
     # TODO hacer un random con las posibilidades
     new_evaluation.state = "signed"
     new_evaluation.discharge_reason = 'home'
+    new_evaluation.click('end_evaluation')
     save_delete(new_evaluation)
     logging.info(
         f"created new evaluation {new_evaluation.id} with diagnosis {new_evaluation.diagnosis.name} for patient {new_patient.rec_name} with id {new_patient.id}")
@@ -45,7 +46,7 @@ if __name__ == "__main__":
 
     connect_to_gnu()
 
-    for i in range(2):
+    for i in range(1):
         create_evaluation()
 
 
