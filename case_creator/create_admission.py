@@ -5,6 +5,23 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 
+def create_UCI():
+    def create_UCI_unit():
+        new_unit = Model.get('gnuhealth.hospital.unit')()
+        new_unit.name = "UCI"
+        new_unit.institution = Model.get('gnuhealth.institution')(1)
+        new_unit.save()
+        return new_unit
+    uci_unit = create_UCI_unit()
+    new_ward = Model.get('gnuhealth.hospital.ward')()
+    new_ward.name = "UCI"
+    new_ward.unit = uci_unit
+    new_ward.floor = "2"
+    save_delete(new_ward)
+    return new_ward
+
+
+
 def duplicate_bed(original):
     Bed = Model.get('product.product')
     copied_bed = Bed()
@@ -57,7 +74,7 @@ def create_new_bed_as_product():
     logging.info(f"created bed with code {copied_bed.code} ")
     return copied_bed
 
-def create_new_free_bed(bed_product):
+def create_new_free_bed(bed_product,in_ward = False):
     '''
     Create a free bed in the hospital as place for a patient
     :return:
@@ -67,12 +84,14 @@ def create_new_free_bed(bed_product):
     # bed_type = random.choice(bed_types)
     new_bed = Bed()
     new_bed.name = bed_product
+    # if in_ward == True:
+    #     new_bed.ward = Model.get('gnuhealth.hospital.ward').find([("name","ilike","UCI")])
     new_bed.state = 'free'
     save_delete(new_bed)
     logging.info(f"created free with rec name {new_bed.rec_name} and id: {new_bed.id} ")
     return new_bed
 
-def create_free_bed():
+def create_free_bed(in_ward = False):
     new_bed = create_new_bed_as_product()
     bed_place = create_new_free_bed(new_bed)
     return bed_place
@@ -90,44 +109,72 @@ def create_occupied_bed():
     logging.info(f"Bed {new_bed.rec_name} with id: {new_bed.id} occupated")
     return new_bed
 
-def create_admission():
+def create_admission(admission_type = 'urgent',in_ward = False,):
     """
     Creación de altas de casos previamente confirmados.
     :return:
     """
-
-
-    from create_disease import create_random_confirmed_disease_case
-
     # create a open evaluation (a patient with a confirmed disease)
+    from case_creator.create_disease import create_random_confirmed_disease_case
     disease = create_random_confirmed_disease_case()
     patient = disease.name
-    bed = create_free_bed()
+    bed = create_free_bed(in_ward)
     time_hospitalization = random.randint(1, 90)
     start_date = datetime.now()
     end_date = start_date + relativedelta(days=time_hospitalization)
     inpatient = Model.get('gnuhealth.inpatient.registration')()
     inpatient.discharge_date = end_date
     inpatient.bed = bed
-    bed.state = 'occupied'
+    # bed.state = 'occupied'
     save_delete(bed)
     inpatient.admission_reason = disease.pathology
     inpatient.hospitalization_date = start_date
     inpatient.patient = patient
-    inpatient.admission_type = 'urgent'
+    if admission_type:
+        inpatient.admission_type = 'urgent'
+    else:
+        tmp = inpatient._fields["admission_type"]["selection"]
+        admission_type = [item[0] for item in tmp]
+        inpatient.admission_type = random.choice(admission_type)
+    # admission_type = fields.Selection([
+    #     (None, ''),
+    #     ('routine', 'Routine'),
+    #     ('maternity', 'Maternity'),
+    #     ('elective', 'Elective'),
+    #     ('urgent', 'Urgent'),
+    #     ('emergency', 'Emergency'),
+    if in_ward:
+        inpatient.icu = in_ward
+    inpatient.click('admission') # TODO el paciente no pasa a admission
     save_delete(inpatient)
     # TODO need Confirm y Admission para que esté completp
     logging.info(f"create inpatient: {patient.name} with pathology {disease.pathology.name} date admisssion {inpatient.hospitalization_date} statimated discharge date {inpatient.discharge_date}")
     return inpatient
 
-# if __name__ == "__main__":
-#     setup_logging("../app.log")
-#
-#     connect_to_gnu()
-#
-#     for _ in range(20):
-#         create_free_bed()
-#
-#
-#     create_admission()
+def create_discharge(disease = None, reason = None):
+    # reasons:
+    inpatient = create_admission(disease)
+    inpatient.discharge_dx = inpatient.admission_reason
+    if reason:
+        inpatient.discharge_reason = reason
+    else:
+        tmp = inpatient._fields["discharge_reason"]["selection"]
+        discharge_selection = [item[0] for item in tmp]
+        inpatient.discharge_reason = random.choice(discharge_selection)
+    save_delete(inpatient)
+    logging.info(f"inpatient {inpatient.patient.name} discharged for {inpatient.discharge_reason} after {inpatient.discharge_dx}")
+    return inpatient
+
+if __name__ == "__main__":
+    setup_logging("../app.log")
+
+    connect_to_gnu()
+    #
+    # for _ in range(20):
+    #     create_free_bed()
+
+
+    # create_admission()
+    create_admission(in_ward=True)
+    # create_discharge()
 
