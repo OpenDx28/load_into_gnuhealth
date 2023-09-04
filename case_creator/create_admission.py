@@ -6,6 +6,10 @@ from dateutil.relativedelta import relativedelta
 
 
 def create_UCI():
+    '''
+    create a ward called UCI
+    :return: a 'gnuhealth.hospital.ward' model
+    '''
     def create_UCI_unit():
         new_unit = Model.get('gnuhealth.hospital.unit')()
         new_unit.name = "UCI"
@@ -19,10 +23,12 @@ def create_UCI():
     new_ward.floor = "2"
     save_delete(new_ward)
     return new_ward
-
-
-
 def duplicate_bed(original):
+    '''
+    Copy a bed product to create a new one
+    :param original: a bed in model 'product.product'
+    :return: a bed in model 'product.product'
+    '''
     Bed = Model.get('product.product')
     copied_bed = Bed()
     for field in Bed._fields:
@@ -42,6 +48,10 @@ def duplicate_bed(original):
     return copied_bed
 
 def list_bed_product():
+    '''
+    Make a list of all beds (as product)
+    :return: a list of Models : 'product.product'
+    '''
     l = list()
     all_products = Model.get('product.product').find([])
     for prod in all_products:
@@ -58,50 +68,50 @@ def list_free_bed():
             l.append(b)
     return l
 
-def create_new_bed_as_product():
-    '''
-    Createa new bed in the hospital as product
-    :return:
-    '''
-    original_bed = Model.get('product.product')(393)
-    copied_bed = duplicate_bed(original_bed)
-    number = generate_random_code_6_digits()
-    copied_bed.rec_name = f"[BED {number}] {number}"
-    copied_bed.code = f"[BED {number}]"
-    copied_bed.suffix_code = f"BED {number}"
-    copied_bed.is_bed = True
-    save_delete(copied_bed)
-    logging.info(f"created bed with code {copied_bed.code} ")
-    return copied_bed
 
-def create_new_free_bed(bed_product,in_ward = False):
+
+def create_new_free_bed():
     '''
     Create a free bed in the hospital as place for a patient
     :return:
     '''
+
+    def create_new_bed_as_product():
+        '''
+        Createa new bed in the hospital as product
+        :return:
+        '''
+        original_bed = Model.get('product.product')(393)
+        copied_bed = duplicate_bed(original_bed)
+        number = generate_random_code_6_digits()
+        copied_bed.rec_name = f"[BED {number}] {number}"
+        copied_bed.code = f"[BED {number}]"
+        copied_bed.suffix_code = f"BED {number}"
+        copied_bed.is_bed = True
+        save_delete(copied_bed)
+        logging.info(f"created bed with code {copied_bed.code} ")
+        return copied_bed
+
+    bed_product = create_new_bed_as_product()
     Bed = Model.get('gnuhealth.hospital.bed')
     # # todo creo que en este caso esto no afecta porque rodas scuestan lo mismo
     # bed_type = random.choice(bed_types)
     new_bed = Bed()
     new_bed.name = bed_product
-    # if in_ward == True:
-    #     new_bed.ward = Model.get('gnuhealth.hospital.ward').find([("name","ilike","UCI")])
     new_bed.state = 'free'
     save_delete(new_bed)
     logging.info(f"created free with rec name {new_bed.rec_name} and id: {new_bed.id} ")
     return new_bed
 
-def create_free_bed(in_ward = False):
-    new_bed = create_new_bed_as_product()
-    bed_place = create_new_free_bed(new_bed)
-    return bed_place
-
 
 
 
 def create_occupied_bed():
-
-    # TODO: en el sistema no aparecen las camas ocupadas.. parece que hay que crear un admision?
+    '''
+    Choose a  free bed ramdomly a change ir state to ocuppied
+    :return: model gnuhealth.hospital.bed
+    '''
+    # TODO not sure if this is woking
     free_beds = list_free_bed()
     new_bed = random.choice(free_beds)
     new_bed.state = 'occupied'
@@ -118,14 +128,13 @@ def create_admission(admission_type = 'urgent',in_ward = False,):
     from case_creator.create_disease import create_random_confirmed_disease_case
     disease = create_random_confirmed_disease_case()
     patient = disease.name
-    bed = create_free_bed(in_ward)
+    bed = create_new_free_bed()
     time_hospitalization = random.randint(1, 90)
     start_date = datetime.now()
     end_date = start_date + relativedelta(days=time_hospitalization)
     inpatient = Model.get('gnuhealth.inpatient.registration')()
     inpatient.discharge_date = end_date
     inpatient.bed = bed
-    # bed.state = 'occupied'
     save_delete(bed)
     inpatient.admission_reason = disease.pathology
     inpatient.hospitalization_date = start_date
