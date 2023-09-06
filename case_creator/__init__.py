@@ -81,10 +81,7 @@ def get_random_pathology():
     return pathology
 
 def pathology(disease = None):
-    if not disease:
-        pathology = get_random_pathology()
-    else:
-        pathology = get_pathology(disease)
+    pathology = get_pathology(disease) if disease is not None else get_random_pathology()
     return pathology
 
 def generate_random_datetime(start_date, end_date):

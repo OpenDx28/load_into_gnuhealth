@@ -16,9 +16,6 @@ def create_evaluation(disease=None):
 
     # asign patient
     new_evaluation.patient = new_patient
-    new_evaluation.patient = new_patient
-
-    new_evaluation.patient = new_patient
     new_evaluation.diagnosis = pathology(disease)
 
 

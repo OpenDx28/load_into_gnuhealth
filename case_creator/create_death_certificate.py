@@ -3,13 +3,13 @@ from proteus import config, Model
 
 
 
-def create_random_death_certificate(authopsy = False):
+def create_random_death_certificate(disease = None, authopsy = False):
     new_party = create_new_party_person()
     Death = Model.get('gnuhealth.death_certificate')
     new_death = Death()
     # el certificado se lanza contra el party no el patient
     new_death.name = new_party
-    new_death.cod = get_random_pathology()
+    new_death.cod = pathology(disease)
     new_death.signed_by = Model.get('gnuhealth.healthprofessional')(1)
     new_death.country = Model.get('country.country')(208)
     new_death.country_subdivision = Model.get('country.subdivision')(1172)

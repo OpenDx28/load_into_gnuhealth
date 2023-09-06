@@ -119,14 +119,14 @@ def create_occupied_bed():
     logging.info(f"Bed {new_bed.rec_name} with id: {new_bed.id} occupated")
     return new_bed
 
-def create_admission(admission_type = 'urgent',in_ward = False,):
+def create_admission(disease = None, admission_type = None,in_cu = False,):
     """
     Creación de altas de casos previamente confirmados.
     :return:
     """
-    # create a open evaluation (a patient with a confirmed disease)
-    from case_creator.create_disease import create_random_confirmed_disease_case
-    disease = create_random_confirmed_disease_case()
+    # create an open evaluation (a patient with a confirmed disease)
+    from case_creator.create_disease import create_confirmed_disease_case
+    disease = create_confirmed_disease_case(disease=disease)
     patient = disease.name
     bed = create_new_free_bed()
     time_hospitalization = random.randint(1, 90)
@@ -140,11 +140,11 @@ def create_admission(admission_type = 'urgent',in_ward = False,):
     inpatient.hospitalization_date = start_date
     inpatient.patient = patient
     if admission_type:
-        inpatient.admission_type = 'urgent'
+        inpatient.admission_type = admission_type
     else:
         tmp = inpatient._fields["admission_type"]["selection"]
-        admission_type = [item[0] for item in tmp]
-        inpatient.admission_type = random.choice(admission_type)
+        admissions = [item[0] for item in tmp if item[0] is not None]
+        inpatient.admission_type = random.choice(admissions)
     # admission_type = fields.Selection([
     #     (None, ''),
     #     ('routine', 'Routine'),
@@ -152,8 +152,8 @@ def create_admission(admission_type = 'urgent',in_ward = False,):
     #     ('elective', 'Elective'),
     #     ('urgent', 'Urgent'),
     #     ('emergency', 'Emergency'),
-    if in_ward:
-        inpatient.icu = in_ward
+    if in_cu:
+        inpatient.icu = in_cu
     inpatient.click('admission') # TODO el paciente no pasa a admission
     save_delete(inpatient)
     # TODO need Confirm y Admission para que esté completp
@@ -184,6 +184,6 @@ if __name__ == "__main__":
 
 
     # create_admission()
-    create_admission(in_ward=True)
+    create_admission(disease='cholera',in_cu=True)
     # create_discharge()
 
