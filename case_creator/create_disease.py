@@ -10,6 +10,9 @@ def create_disease_case(disease = None):
     new_disease = Disease()
     new_disease.name = new_patient
     new_disease.pathology = pathology(disease)
+    end_date = datetime.now() - timedelta(weeks=1)
+    start_date = end_date - timedelta(weeks=8)
+    new_disease.diagnosed_date = generate_random_datetime(start_date.strftime('%Y-%m-%d %H:%M:%S'), end_date.strftime('%Y-%m-%d %H:%M:%S'))
     save_delete(new_disease)
     logging.info(
         f"created new confirmed disease {new_disease.id} "
@@ -34,9 +37,9 @@ def create_confirmed_disease_case(disease = None):
 
 def create_random_healed_disease(disease = None):
     new_disease = create_confirmed_disease_case(disease)
-    start_date = '2022-08-01 00:00:00'
-    end_date = '2023-08-1 23:59:59'
-    new_disease.healed_date = generate_random_datetime(start_date,end_date)
+    start_date = new_disease.diagnosed_date
+    end_date = datetime.now()
+    new_disease.healed_date = generate_random_datetime(start_date.strftime('%Y-%m-%d %H:%M:%S'), end_date.strftime('%Y-%m-%d %H:%M:%S'))
     save_delete(new_disease)
     logging.info(f"created new healed disease {new_disease.id}"
         f"with disease {new_disease.pathology.name}"
@@ -47,7 +50,7 @@ def create_random_healed_disease(disease = None):
 if __name__ == "__main__":
     setup_logging("../app.log")
     connect_to_gnu()
-    for i in range(1):
+    for i in range(5):
         create_confirmed_disease_case()
         create_random_healed_disease()
 

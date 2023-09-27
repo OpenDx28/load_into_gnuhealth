@@ -119,7 +119,7 @@ def create_occupied_bed():
     logging.info(f"Bed {new_bed.rec_name} with id: {new_bed.id} occupated")
     return new_bed
 
-def create_admission(disease = None, admission_type = None,in_cu = False,):
+def create_admission(disease = None, admission_type = None,in_icu = False):
     """
     Creación de altas de casos previamente confirmados.
     :return:
@@ -152,8 +152,8 @@ def create_admission(disease = None, admission_type = None,in_cu = False,):
     #     ('elective', 'Elective'),
     #     ('urgent', 'Urgent'),
     #     ('emergency', 'Emergency'),
-    if in_cu:
-        inpatient.icu = in_cu
+    if in_icu:
+        inpatient.icu = in_icu
     inpatient.click('admission') # TODO el paciente no pasa a admission
     save_delete(inpatient)
     # TODO need Confirm y Admission para que esté completp
@@ -168,7 +168,9 @@ def create_discharge(disease = None, reason = None):
         inpatient.discharge_reason = reason
     else:
         tmp = inpatient._fields["discharge_reason"]["selection"]
-        discharge_selection = [item[0] for item in tmp]
+        # discharge_selection = [item[0] for item in tmp]
+        # for the momento only consider these two
+        discharge_selection = ['home','death']
         inpatient.discharge_reason = random.choice(discharge_selection)
     save_delete(inpatient)
     logging.info(f"inpatient {inpatient.patient.name} discharged for {inpatient.discharge_reason} after {inpatient.discharge_dx}")
@@ -184,6 +186,6 @@ if __name__ == "__main__":
 
 
     # create_admission()
-    create_admission(disease='cholera',in_cu=True)
-    # create_discharge()
+    create_admission(disease='cholera', in_icu=True)
+    create_discharge()
 

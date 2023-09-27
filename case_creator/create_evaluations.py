@@ -1,4 +1,5 @@
 from case_creator import *
+from datetime import datetime, timedelta
 
 def create_evaluation(disease=None):
     # creo un nuevo paciente
@@ -20,10 +21,11 @@ def create_evaluation(disease=None):
 
 
     # create start and end evaluation time
-    start_date = '2023-08-01 00:00:00'
-    end_date = '2023-08-31 23:59:59'
-    eval_start = generate_random_datetime(start_date, end_date)
-    eval_endtime = generate_random_endtime(eval_start)
+    end_date = datetime.now()
+    start_date = end_date - timedelta(weeks=4)
+    eval_endtime = generate_random_datetime(start_date.strftime('%Y-%m-%d %H:%M:%S'), end_date.strftime('%Y-%m-%d %H:%M:%S'))
+    start_time = eval_endtime - timedelta(minutes=60)
+    eval_start = generate_random_datetime(start_time.strftime('%Y-%m-%d %H:%M:%S'), eval_endtime.strftime('%Y-%m-%d %H:%M:%S'))
     new_evaluation.evaluation_start = eval_start
     new_evaluation.evaluation_endtime = eval_endtime
 
@@ -43,7 +45,7 @@ if __name__ == "__main__":
 
     connect_to_gnu()
 
-    for i in range(1):
+    for i in range(5):
         create_evaluation()
 
 
