@@ -27,7 +27,7 @@ def push_all_diseases_cases():
             create_random_death_certificate(disease=disease,authopsy=authopsy)
         for admission in ADMISSION_TYPE:
             for icu in [True,False]:
-                create_admission(admission_type= admission, in_cu=icu)
+                create_admission(admission_type= admission, in_icu=icu)
 
 
 if __name__ == "__main__":
