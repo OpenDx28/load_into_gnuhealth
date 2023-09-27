@@ -14,13 +14,14 @@ def create_UCI():
         new_unit = Model.get('gnuhealth.hospital.unit')()
         new_unit.name = "UCI"
         new_unit.institution = Model.get('gnuhealth.institution')(1)
-        new_unit.save()
+        new_unit.code = "ICU"
+        save_delete(new_unit)
         return new_unit
     uci_unit = create_UCI_unit()
     new_ward = Model.get('gnuhealth.hospital.ward')()
-    new_ward.name = "UCI"
+    new_ward.name = "ICU"
     new_ward.unit = uci_unit
-    new_ward.floor = "2"
+    new_ward.floor = 2
     save_delete(new_ward)
     return new_ward
 def duplicate_bed(original):
@@ -70,7 +71,7 @@ def list_free_bed():
 
 
 
-def create_new_free_bed():
+def create_new_free_bed(in_icu = False):
     '''
     Create a free bed in the hospital as place for a patient
     :return:
@@ -98,6 +99,13 @@ def create_new_free_bed():
     # bed_type = random.choice(bed_types)
     new_bed = Bed()
     new_bed.name = bed_product
+    if in_icu == True:
+        wards  =  Model.get('gnuhealth.hospital.ward').find([('name','like','ICU')])
+        if len(wards) == 0:
+            icu_ward = create_UCI()
+        else:
+            icu_ward = wards[0]
+        new_bed.ward = icu_ward
     new_bed.state = 'free'
     save_delete(new_bed)
     logging.info(f"created free with rec name {new_bed.rec_name} and id: {new_bed.id} ")
@@ -128,7 +136,7 @@ def create_admission(disease = None, admission_type = None,in_icu = False):
     from case_creator.create_disease import create_confirmed_disease_case
     disease = create_confirmed_disease_case(disease=disease)
     patient = disease.name
-    bed = create_new_free_bed()
+    bed = create_new_free_bed(in_icu)
     time_hospitalization = random.randint(1, 90)
     start_date = datetime.now()
     end_date = start_date + relativedelta(days=time_hospitalization)

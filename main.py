@@ -10,13 +10,14 @@ HOSTNAME = 'test1.medtec4susdev.org'
 PORT = ""
 PASSWORD = "opendx28"
 ADMISSION_TYPE = [None, 'routine', 'maternity', 'elective', 'urgent', 'emergency']
-N_FREE_BEDS = 5
+N_FREE_BEDS = 10
 DISEASES = get_diseases_csv(DISEASES_SCV)
 
 
 def push_all_diseases_cases():
     for _ in range(N_FREE_BEDS):
         create_new_free_bed()
+        create_new_free_bed(in_icu=True)
 
     for disease in DISEASES:
         create_evaluation(disease=disease)
