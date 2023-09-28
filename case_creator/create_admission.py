@@ -168,21 +168,32 @@ def create_admission(disease = None, admission_type = None,in_icu = False):
     logging.info(f"create inpatient: {patient.name} with pathology {disease.pathology.name} date admisssion {inpatient.hospitalization_date} statimated discharge date {inpatient.discharge_date}")
     return inpatient
 
-def create_discharge(disease = None, reason = None):
-    # reasons:
-    inpatient = create_admission(disease)
-    inpatient.discharge_dx = inpatient.admission_reason
-    if reason:
+
+
+def apply_discharge(inpatient, reason = None):
+     inpatient.discharge_dx = inpatient.admission_reason
+     if reason:
         inpatient.discharge_reason = reason
-    else:
+     else:
         tmp = inpatient._fields["discharge_reason"]["selection"]
         # discharge_selection = [item[0] for item in tmp]
         # for the momento only consider these two
         discharge_selection = ['home','death']
         inpatient.discharge_reason = random.choice(discharge_selection)
-    save_delete(inpatient)
-    logging.info(f"inpatient {inpatient.patient.name} discharged for {inpatient.discharge_reason} after {inpatient.discharge_dx}")
-    return inpatient
+     inpatient.click('discharge')
+     inpatient.click('bedclean')
+     save_delete(inpatient)
+     logging.info(f"inpatient {inpatient.patient.name} discharged for {inpatient.discharge_reason} after {inpatient.discharge_dx}")
+     return inpatient
+
+
+def create_discharge(disease = None, reason = None):
+    # reasons:
+    inpatient = create_admission(disease)
+    apply_discharge(inpatient,reason)
+
+
+
 
 if __name__ == "__main__":
     setup_logging("../app.log")
@@ -194,6 +205,7 @@ if __name__ == "__main__":
 
 
     # create_admission()
-    create_admission(disease='cholera', in_icu=True)
-    create_discharge()
+    # create_admission(disease='cholera', in_icu=True)
+    for _ in range(1):
+        create_discharge()
 
