@@ -43,3 +43,8 @@ def get_diseases_dhis_gnu():
     df = get_as_df(diseases_dict)
     df.to_csv(DISEASES_SCV)
 
+def watch_last(ModelName):
+    MyModel = Model.get(ModelName)
+    last = MyModel.find([], order=[("id", "DESC")], limit=1)
+    return last[0]
+

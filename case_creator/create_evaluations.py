@@ -40,13 +40,13 @@ def create_evaluation(disease=None):
     return new_patient, new_evaluation
 
 
-if __name__ == "__main__":
-    setup_logging("../app.log")
-
-    connect_to_gnu()
-
-    for i in range(5):
-        create_evaluation()
+# if __name__ == "__main__":
+#     setup_logging("../app.log")
+#
+#     connect_to_gnu()
+#
+#     for i in range(5):
+#         create_evaluation()
 
 
 

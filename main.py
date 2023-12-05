@@ -3,6 +3,7 @@ from case_creator.create_evaluations import create_evaluation
 from case_creator.create_disease import create_confirmed_disease_case, create_random_healed_disease
 from case_creator.create_death_certificate import create_random_death_certificate
 from case_creator.create_admission import create_new_free_bed, create_admission, create_discharge
+from case_creator.create_new_borns import create_delivery
 
 USER = "admin"
 DB = "ghs"
@@ -31,6 +32,11 @@ def push_all_diseases_cases():
                 create_admission(admission_type= admission, in_icu=icu)
 
 
+def push_newborns():
+    for result in ['live_birth', 'abortion','stillbirth']:
+        create_delivery(result = result)
+
+
 
 if __name__ == "__main__":
 
@@ -45,3 +51,4 @@ if __name__ == "__main__":
     #                port = PORT)
 
     push_all_diseases_cases()
+    push_newborns()

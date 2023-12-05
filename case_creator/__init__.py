@@ -34,16 +34,19 @@ def connect_to_gnu(user = 'admin',
     logging.info(f"connected to conf")
     return conf
 
+
 def get_last_record(ModelName):
     MyModel = Model.get(ModelName)
     last = MyModel.find([], order=[("id", "DESC")], limit=1)
     return last[0]
+
 
 def print_record_fields(record):
     for field_name, field in record._fields.items():
         value = getattr(record, field_name)
         # Printing basic information about each field and its value
         print(f"{field_name} ({type(field).__name__}): {value}")
+
 
 def save_delete(new_record):
     try:
@@ -80,9 +83,11 @@ def get_random_pathology():
         pathology = get_pathology(disease)
     return pathology
 
+
 def pathology(disease = None):
     pathology = get_pathology(disease) if disease is not None else get_random_pathology()
     return pathology
+
 
 def generate_random_datetime(start_date, end_date):
     import random
@@ -120,7 +125,8 @@ def generate_random_endtime(start_datetime):
 def generate_random_code_6_digits():
     return random.randint(100000, 999999)
 
-def create_new_party_person():
+
+def create_new_party_person(gender = None):
     logging.info("creating new party as person ")
     fake = Faker()
 
@@ -131,8 +137,8 @@ def create_new_party_person():
     email = fake.email()
 
     # create fake gender
-    gender = fake.random_element(elements=('m', 'f'))
-
+    if not gender:
+        gender = fake.random_element(elements=('m', 'f'))
     dob = fake.date_of_birth()
 
     Party = Model.get('party.party')
@@ -151,14 +157,14 @@ def create_new_party_person():
     return new_party
 
 
-def create_new_patient():
+def create_new_patient(gender = None):
     logging.info("creating new party:...")
 
     Patient = Model.get('gnuhealth.patient')
     # create new party
-    new_party = create_new_party_person()
+    new_party = create_new_party_person(gender)
     new_patient = Patient()
-    new_patient.name = create_new_party_person()
+    new_patient.name = new_party
     new_patient.gender = new_party.gender
     new_patient.save()
     save_delete(new_patient)
