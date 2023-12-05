@@ -7,3 +7,5 @@ app.log
 case_creator/__pycache__/
 
 demo.sql
+
+__pycache__/

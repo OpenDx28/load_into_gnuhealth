@@ -1,7 +1,6 @@
 from case_creator import *
 from datetime import datetime, timedelta
 import random
-from proteus import ModelList
 
 
 def create_delivery(result = 'live_birth'):

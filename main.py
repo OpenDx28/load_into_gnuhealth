@@ -1,9 +1,12 @@
+import random
+
 from case_creator import connect_to_gnu, setup_logging,get_diseases_csv, get_random_pathology, create_new_party_person,DISEASES_SCV
 from case_creator.create_evaluations import create_evaluation
 from case_creator.create_disease import create_confirmed_disease_case, create_random_healed_disease
 from case_creator.create_death_certificate import create_random_death_certificate
 from case_creator.create_admission import create_new_free_bed, create_admission, create_discharge
 from case_creator.create_new_borns import create_delivery
+from case_creator.create_surgeries import create_surgery
 
 USER = "admin"
 DB = "ghs"
@@ -36,6 +39,12 @@ def push_newborns():
     for result in ['live_birth', 'abortion','stillbirth']:
         create_delivery(result = result)
 
+
+def push_surgeries(): # todo test
+    grades = [None,'grade1', 'grade2', 'grade3','grade3a', 'grade4', 'grade4a','grade4b', 'grade5']
+    # grade = random.choice([None,'grade1', 'grade2', 'grade3','grade3a', 'grade4', 'grade4a','grade4b', 'grade5'])
+    for grade in grades:
+        create_surgery(grade)
 
 
 if __name__ == "__main__":
