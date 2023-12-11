@@ -21,6 +21,8 @@ def create_random_death_certificate(disease = None, authopsy = False):
     new_death.place_of_death = 'health_center'
     if authopsy:
         new_death.autopsy = authopsy
+    else:
+        new_death.autopsy = random.choice([True, False])
     new_death.state = 'done'
     new_death.type_of_death = 'natural'
     new_death.du = None
@@ -31,11 +33,11 @@ def create_random_death_certificate(disease = None, authopsy = False):
     return new_death
 
 
-if __name__ == '__main__':
-    setup_logging("../app.log")
-    connect_to_gnu()
-    for i in range(2):
-        create_random_death_certificate()
+# if __name__ == '__main__':
+#     setup_logging("../app.log")
+#     connect_to_gnu()
+#     for i in range(2):
+#         create_random_death_certificate()
 
 
 

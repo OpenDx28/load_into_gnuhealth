@@ -18,6 +18,24 @@ N_FREE_BEDS = 10
 DISEASES = get_diseases_csv(DISEASES_SCV)
 
 
+
+def push_random_cases(n):
+    cases = [
+        create_evaluation,
+        create_confirmed_disease_case,
+        create_random_healed_disease,
+        create_random_death_certificate,
+        create_random_death_certificate,
+        create_discharge,
+        create_admission,
+        create_delivery,
+        create_surgery
+    ]
+
+    for _ in range(n):
+        case = random.choice(cases)
+        case()
+
 def push_all_diseases_cases():
     for _ in range(N_FREE_BEDS):
         create_new_free_bed()
@@ -44,7 +62,7 @@ def push_surgeries(): # todo test
     grades = [None,'grade1', 'grade2', 'grade3','grade3a', 'grade4', 'grade4a','grade4b', 'grade5']
     # grade = random.choice([None,'grade1', 'grade2', 'grade3','grade3a', 'grade4', 'grade4a','grade4b', 'grade5'])
     for grade in grades:
-        create_surgery(grade)
+        create_surgery(clavien_dindo=grade)
 
 
 if __name__ == "__main__":
@@ -61,3 +79,6 @@ if __name__ == "__main__":
 
     push_all_diseases_cases()
     push_newborns()
+    for _ in range(2):
+        push_surgeries()
+    # push_random_cases(2)

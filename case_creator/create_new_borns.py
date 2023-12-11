@@ -3,16 +3,21 @@ from datetime import datetime, timedelta
 import random
 
 
-def create_delivery(result = 'live_birth'):
+def create_delivery(result = None):
     new_patient = create_new_patient(gender='f')
     logging.info("creating new evaluation...")
     Pregnancy = Model.get('gnuhealth.patient.pregnancy')
     new_pregnancy = Pregnancy()
+    logging.info("creating new pewgnancy...")
     new_pregnancy.name = new_patient
     new_pregnancy.fetuses = 1
     new_pregnancy.gravida = random.choice(range(1,5))
     new_pregnancy.current_pregnancy = False
-    new_pregnancy.pregnancy_end_result =  result
+    if result:
+        new_pregnancy.pregnancy_end_result = result
+    else:
+        new_pregnancy.pregnancy_end_result = random.choice(['live_birth', 'abortion','stillbirth'])
+
     new_pregnancy.pregnancy_end_date = generate_random_datetime((datetime.now()- timedelta(weeks=1)).strftime('%Y-%m-%d %H:%M:%S'),
                                                                 datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                                                                 )
@@ -25,6 +30,7 @@ def create_delivery(result = 'live_birth'):
     new_perinatal = create_perinatal_info(new_pregnancy)
     new_pregnancy.perinatal.append(new_perinatal)
     save_delete(new_pregnancy)
+    logging.info(f"creatid new pregnancy en date {new_pregnancy.pregnancy_end_date} result {new_pregnancy.pregnancy_end_result}")
     return new_pregnancy
 
 
