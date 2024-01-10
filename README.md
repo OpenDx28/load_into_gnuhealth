@@ -7,7 +7,7 @@ En la carpeta principal de encuentra:
 - Documento docker-compose.yaml para desplegar todos los servicios esenciales con una base de datos previamente poblada.
 - __diseases.csv__ documento que traduce los nombres de las enfermedades según aparecen en DHIS2  a aquellas que coinciden en programa gnuhealth con sus códigos.
 - __main.py__ generador de datos.
-- __case_creator__ contiene las funciones para generar lso datos.
+- __case_creator__ contiene las funciones para generar los distintos casos específicos que servirán para poner a pruebas los indicadores desarrolados en el proyecto: https://github.com/OpenDx28/early_warning_system_ETL.
 
 ## Despliegue de Servicios
 
