@@ -42,7 +42,11 @@ def create_surgery(clavien_dindo = None):
 
 #
 # if __name__ == "__main__":
-#     connect_to_gnu()
+#     connect_to_gnu(user = 'admin',
+#                    password = 'opendx28',
+#                    dbname = 'ghs2',
+#                    hostname = 'ghserver2.193.147.109.10.nip.io',
+#                    port = '80')
 #     create_surgery('grade5')
 
 

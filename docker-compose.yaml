@@ -1,9 +1,10 @@
 version: "3.3"
 
 # docker build -t opendx/gnu_health https://github.com/OpenDx28/gnu-health-server-docker.git#new_demo
+# docker build -t opendx/gnu_health:new_demo_v2.dic.23 https://github.com/OpenDx28/gnu-health-server-docker.git#new_demo_v2
 services:
   health_1:
-    image: opendx/gnu_health
+    image: opendx/gnu_health:new_demo_v2.dic.23
     environment:
       - DB_NAME=ghs
     links:
@@ -12,8 +13,8 @@ services:
     ports:
       - "8001:8000"
     #      - "8069:8069"
-    volumes:
-      - ${VOLUMES_BASE_PATH:-./volumes}/ghs1_local:/home/gnuhealth/gnuhealth/tryton/server/modules/local
+#    volumes:
+#      - ${VOLUMES_BASE_PATH:-./volumes}/ghs1_local:/home/gnuhealth/gnuhealth/tryton/server/modules/local
     depends_on:
       - postgres
   #    condition: service_healthy
@@ -24,10 +25,10 @@ services:
       - POSTGRES_USER=gnuhealth
       - POSTGRES_PASSWORD=gnuhealth
       - PGDATA=/var/lib/postgresql/data/
-    volumes:
-      - ${VOLUMES_BASE_PATH:-./volumes}/pg:/var/lib/postgresql/data
-#    ports:
-#      - "5434:5432"
+#    volumes:
+#      - ${VOLUMES_BASE_PATH:-./volumes}/pg-06122023:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U gnuhealth -d gnuhealth" ]
       interval: 1s

@@ -1,5 +1,7 @@
 import random
 
+import pandas as pd
+
 from case_creator import connect_to_gnu, setup_logging,get_diseases_csv, get_random_pathology, create_new_party_person,DISEASES_SCV
 from case_creator.create_evaluations import create_evaluation
 from case_creator.create_disease import create_confirmed_disease_case, create_random_healed_disease
@@ -65,20 +67,25 @@ def push_surgeries(): # todo test
         create_surgery(clavien_dindo=grade)
 
 
-if __name__ == "__main__":
-
-    setup_logging("app.log")
-
-    # localmente por defecto
-    connect_to_gnu()
-    # connect_to_gnu(user = USER,
-    #                password = PASSWORD,
-    #                dbname = DB,
-    #                hostname = HOSTNAME,
-    #                port = PORT)
-
+def push_all_cases():
     push_all_diseases_cases()
     push_newborns()
     for _ in range(2):
         push_surgeries()
-    # push_random_cases(2)
+
+
+
+if __name__ == "__main__":
+
+    setup_logging("app.log")
+    connexions = pd.read_csv('connexions.csv')
+    for _, connexion in connexions.iterrows():
+        connect_to_gnu(user = connexion['user'],
+                       password = connexion['password'],
+                        dbname= connexion['dbname'],
+                       hostname= connexion['hostname'],
+                       port= str(connexion['port']))
+
+
+        # push_all_cases()
+        push_random_cases(3)

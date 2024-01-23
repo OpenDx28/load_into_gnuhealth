@@ -5,7 +5,7 @@ import random
 
 def create_delivery(result = None):
     new_patient = create_new_patient(gender='f')
-    logging.info("creating new evaluation...")
+    logging.info("creating new DELIVERY...")
     Pregnancy = Model.get('gnuhealth.patient.pregnancy')
     new_pregnancy = Pregnancy()
     logging.info("creating new pewgnancy...")
@@ -30,7 +30,7 @@ def create_delivery(result = None):
     new_perinatal = create_perinatal_info(new_pregnancy)
     new_pregnancy.perinatal.append(new_perinatal)
     save_delete(new_pregnancy)
-    logging.info(f"creatid new pregnancy en date {new_pregnancy.pregnancy_end_date} result {new_pregnancy.pregnancy_end_result}")
+    logging.info(f"creating new pregnancy end date {new_pregnancy.pregnancy_end_date} result {new_pregnancy.pregnancy_end_result}")
     return new_pregnancy
 
 

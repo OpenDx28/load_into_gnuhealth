@@ -41,12 +41,18 @@ def create_evaluation(disease=None):
 
 
 # if __name__ == "__main__":
-#     setup_logging("../app.log")
+#         setup_logging("app.log")
+#         connexions = pd.read_csv('../connexions.csv')
+#         for _, connexion in connexions.iterrows():
+#             connect_to_gnu(user = connexion['user'],
+#                            password = connexion['password'],
+#                             dbname= connexion['dbname'],
+#                            hostname= connexion['hostname'],
+#                            port= str(connexion['port']))
 #
-#     connect_to_gnu()
 #
-#     for i in range(5):
-#         create_evaluation()
+#             for i in range(3):
+#                 create_evaluation()
 
 
 
