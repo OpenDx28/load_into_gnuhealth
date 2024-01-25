@@ -1,3 +1,4 @@
+import logging
 import random
 
 import pandas as pd
@@ -9,6 +10,7 @@ from case_creator.create_death_certificate import create_random_death_certificat
 from case_creator.create_admission import create_new_free_bed, create_admission, create_discharge
 from case_creator.create_new_borns import create_delivery
 from case_creator.create_surgeries import create_surgery
+import os
 
 USER = "admin"
 DB = "ghs"
@@ -86,6 +88,7 @@ if __name__ == "__main__":
                        hostname= connexion['hostname'],
                        port= str(connexion['port']))
 
-
+        n_fake_cases = int(os.getenv('FAKE_CASES'))
         # push_all_cases()
-        push_random_cases(3)
+        push_random_cases(n_fake_cases)
+        logging.info(f"creating {n_fake_cases} to {connexion["hostname"]}:{connexion['port']}")
