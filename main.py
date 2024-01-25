@@ -90,7 +90,7 @@ if __name__ == "__main__":
 
         n_fake_cases = os.getenv('FAKE_CASES')
         if n_fake_cases:
-            int(n_fake_cases)
+            n_fake_cases = int(n_fake_cases)
         else:
             n_fake_cases = 5
         # push_all_cases()
