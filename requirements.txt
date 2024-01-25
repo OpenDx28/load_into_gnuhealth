@@ -1,0 +1,11 @@
+Faker==19.3.0
+ipython-genutils==0.2.0
+numpy==1.25.2
+pandas==2.0.3
+ply==3.11
+proteus==6.8.0
+psycopg2==2.9.7
+PyQt5-sip==12.11.0
+pytz==2023.3
+tzdata==2023.3
+webencodings==0.5.1
