@@ -88,7 +88,11 @@ if __name__ == "__main__":
                        hostname= connexion['hostname'],
                        port= str(connexion['port']))
 
-        n_fake_cases = int(os.getenv('FAKE_CASES'))
+        n_fake_cases = os.getenv('FAKE_CASES')
+        if n_fake_cases:
+            int(n_fake_cases)
+        else:
+            n_fake_cases = 5
         # push_all_cases()
+        logging.info(f"creating {n_fake_cases} to {connexion['hostname']}:{connexion['port']}")
         push_random_cases(n_fake_cases)
-        logging.info(f"creating {n_fake_cases} to {connexion["hostname"]}:{connexion['port']}")
