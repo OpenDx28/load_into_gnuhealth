@@ -9,18 +9,30 @@ SCRIPT_DIRECTORY = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DISEASES_SCV = f"/{SCRIPT_DIRECTORY}/diseases.csv"
 
 
-def setup_logging(log_filename, log_level=logging.INFO):
-    """
-    Set up basic logging configuration.
+def setup_logging(log_filename = None, log_level=logging.INFO):
 
-    Parameters:
-    - log_filename (str): The name of the file to log messages to.
-    - log_level: The root logger level (default is logging.INFO).
-    """
-    # Set up the basic configuration
-    logging.basicConfig(filename=log_filename,
-                        level=log_level,
-                        format='%(asctime)s - %(levelname)s - %(message)s')
+    if log_filename:
+        # Configura el nivel de logging
+        logging.basicConfig(filename=log_filename,
+                            level=log_level,
+                            format='%(asctime)s - %(levelname)s - %(message)s')
+    else:
+
+        # Crea un logger
+        logger = logging.getLogger()
+        logger.setLevel(log_level)
+
+        # Crea un handler que escribe los logs en la salida estándar (terminal)
+        handler = logging.StreamHandler()
+        handler.setLevel(log_level)
+
+        # Define el formato del log
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        handler.setFormatter(formatter)
+
+        # Añade el handler al logger
+        logger.addHandler(handler)
+
 
 def connect_to_gnu(user = 'admin',
                    password = 'opendx28',

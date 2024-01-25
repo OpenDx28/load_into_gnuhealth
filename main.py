@@ -77,7 +77,7 @@ def push_all_cases():
 
 if __name__ == "__main__":
 
-    setup_logging("app.log")
+    setup_logging()
     connexions = pd.read_csv('connexions.csv')
     for _, connexion in connexions.iterrows():
         connect_to_gnu(user = connexion['user'],
